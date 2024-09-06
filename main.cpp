@@ -93,7 +93,7 @@ auto main() -> int
 )" + getGitDiff() +
            "```\n<|eot_id|>assistant";
     req.stop.push_back("<|eot_id|>");
-    req.n_predict = 300;
+    req.n_predict = 1000;
     auto ss = std::ostringstream{};
     jsonSer(ss, req);
     return ss.str();
