@@ -23,7 +23,6 @@ struct Rsp
   SER_PROPS(content);
 };
 
-static auto trimWhitespaceAndQuotes(std::string) -> std::string;
 static auto getGitDiff() -> std::string;
 
 auto main() -> int
@@ -114,16 +113,14 @@ auto main() -> int
     auto rsp = Rsp{};
     jsonDeser(tmp.root(), rsp);
 
-    std::string result = rsp.content;
+    auto result = rsp.content;
 
     while (!result.empty() && (result[result.size() - 1] == '"' || result[result.size() - 1] == '\n' ||
                                result[result.size() - 1] == ' '))
       result.resize(result.size() - 1);
 
     if (!result.empty())
-    {
-      std::cout << trimWhitespaceAndQuotes(result);
-    }
+      std::cout << result;
     else
       std::cout << "No result";
   }
@@ -131,13 +128,6 @@ auto main() -> int
   {
     LOG("error:", e.what());
   }
-}
-
-auto trimWhitespaceAndQuotes(std::string str) -> std::string
-{
-  str.erase(0, str.find_first_not_of(" \t\r\n\""));
-  str.erase(str.find_last_not_of(" \t\r\n\"") + 1);
-  return str;
 }
 
 auto getGitDiff() -> std::string
