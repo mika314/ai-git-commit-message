@@ -1,0 +1,13 @@
+((c++-mode
+  .
+  ((flycheck-clang-include-path
+    .
+    (
+     ".coddle/libs_src"
+     "/usr/include/SDL2"
+     "/usr/include/at-spi-2.0"
+     "/usr/include/dbus-1.0"
+     "/usr/include/glib-2.0"
+     "/usr/lib/x86_64-linux-gnu/dbus-1.0/include"
+     "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+     )))))
