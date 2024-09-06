@@ -135,8 +135,8 @@ auto main() -> int
 
 auto trimWhitespaceAndQuotes(std::string str) -> std::string
 {
-  str.erase(0, str.find_first_not_of(" \t\r\n"));
-  str.erase(str.find_last_not_of(" \t\r\n") + 1);
+  str.erase(0, str.find_first_not_of(" \t\r\n\""));
+  str.erase(str.find_last_not_of(" \t\r\n\"") + 1);
   return str;
 }
 
