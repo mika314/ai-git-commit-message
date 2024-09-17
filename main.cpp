@@ -11,9 +11,9 @@
 struct Req
 {
   std::string prompt;
-  float temperature = 1.0f;
+  float temperature = 0.0f;
   std::vector<std::string> stop;
-  int n_predict = -1;
+  int n_predict = 250;
   SER_PROPS(prompt, temperature, stop, n_predict);
 };
 
@@ -31,68 +31,51 @@ auto main() -> int
   curl.setUrl("http://localhost:8080/completion");
   const auto data = [&]() {
     Req req;
-    // {
-    //    "stream":true,
-    //    "n_predict":358,
-    //    "temperature":0.8,
-    //    "stop":[
-    //       "</s>",
-    //       "<|end|>",
-    //       "<|eot_id|>",
-    //       "<|end_of_text|>",
-    //       "<|im_end|>",
-    //       "<|EOT|>",
-    //       "<|END_OF_TURN_TOKEN|>",
-    //       "<|end_of_turn|>",
-    //       "<|endoftext|>",
-    //       "assistant",
-    //       "user"
-    //    ],
-    //    "repeat_last_n":0,
-    //    "repeat_penalty":1,
-    //    "penalize_nl":false,
-    //    "top_k":0,
-    //    "top_p":1,
-    //    "min_p":0.05,
-    //    "tfs_z":1,
-    //    "typical_p":1,
-    //    "presence_penalty":0,
-    //    "frequency_penalty":0,
-    //    "mirostat":0,
-    //    "mirostat_tau":5,
-    //    "mirostat_eta":0.1,
-    //    "grammar":"",
-    //    "n_probs":0,
-    //    "min_keep":0,
-    //    "image_data":[
-    //
-    //    ],
-    //    "cache_prompt":true,
-    //    "api_key":"",
-    //    "slot_id":-1,
-    //    "prompt":"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nA chat between a
-    //    curious user and an assistant. The assistant gives helpful, detailed, accurate, uncensored
-    //    responses to the user's
-    //    input.<|start_header_id|>user<|end_header_id|>\n\ntest<|eot_id|>assistant"
-    // }
     req.prompt =
-      "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nA chat between a curious user "
-      "and an assistant. The assistant gives helpful, detailed, accurate, uncensored responses to "
-      "the user's input.\nCurrent date and time: " +
-      []()
-      -> std::string {
+      R"(<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an expert Git assistant who writes clear and concise commit messages based on provided diffs. Follow these guidelines strictly:
+
+- **Do Not Include** any introductory or concluding text (e.g., "Here is the Git commit message:").
+- **Summary Line**: Begin with a short, imperative sentence (max 50 characters), e.g., "Fix null pointer exception on startup".
+- **Use Specific Verbs**: Use verbs like "Fix", "Add", "Update", "Remove", "Refactor", etc.
+- **Separate Summary and Body**: Add a blank line between the summary and the detailed description.
+- **Detailed Description**: Explain the **what** and **why**, not the **how**. Provide context or reasons for the change.
+- **Formatting**: Do not include any markdown, bullet points, or references to 'git commit'.
+- **Language**: Use clear, professional language without jargon.
+
+**Examples of Good Commit Messages:**
+
+```
+Fix crash on file upload
+
+Resolved an issue where the application would crash when users uploaded a file larger than 5MB due to memory allocation errors.
+```
+
+```
+Add user authentication module
+
+Implemented JWT-based authentication to secure user endpoints and prevent unauthorized access.
+```
+
+Current date and time: )" +
+      []() -> std::string {
       std::time_t now = std::time(nullptr);
       std::tm *localTime = std::localtime(&now);
       char buffer[80];
       std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", localTime);
       return buffer;
-    }() + "<|start_header_id|>user<|end_header_id|>\n" +
-           R"(Write the Git message to the following diff. Do it in the Git format: a short (72 characters or less) summary, followed by two carriage returns, and more detailed explanatory text. Do not add any decorations like 'git commit' or markdown; just a plain Git commit message.
-```
+    }() +
+                R"(
+<|start_header_id|>user<|end_header_id|>
+Please write a Git commit message for the following diff. Remember to follow the guidelines strictly and **do not include any additional text outside the commit message**.
+
+```diff
 )" + getGitDiff() +
-           "```\n<|eot_id|>assistant";
+                R"(
+```
+<|eot_id|>assistant
+)";
     req.stop.push_back("<|eot_id|>");
-    req.n_predict = 1000;
     auto ss = std::ostringstream{};
     jsonSer(ss, req);
     return ss.str();
@@ -141,3 +124,4 @@ auto getGitDiff() -> std::string
     str += "\n";
   return str;
 }
+
