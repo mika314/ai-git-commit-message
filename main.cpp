@@ -48,13 +48,11 @@ You are an expert Git assistant who writes clear and concise commit messages bas
 ```
 Fix crash on file upload
 
-Resolved an issue where the application would crash when users uploaded a file larger than 5MB due to memory allocation errors.
+Resolve an issue where the application crashes when users upload a file larger than 5MB due to memory allocation errors.
 ```
 
 ```
-Add user authentication module
-
-Implemented JWT-based authentication to secure user endpoints and prevent unauthorized access.
+Implement JWT-based authentication
 ```
 
 Current date and time: )" +
