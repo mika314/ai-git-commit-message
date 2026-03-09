@@ -119,9 +119,8 @@ auto main() -> int
 - **Summary Line**: Begin with a short, imperative sentence (max 50 characters), e.g., "Fix null pointer exception on startup".
 - **Use Specific Verbs**: Use verbs like "Fix", "Add", "Update", "Remove", "Refactor", etc.
 - **Separate Summary and Body**: Add a blank line between the summary and the detailed description.
-- **Detailed Description**: Explain the **what** and **why**, not the **how**. Provide context or reasons for the change.
+- **Detailed Description**: Simply state what was changed. Do not guess intent or explain why a change was done if it is not clear from the diff. Do not provide extra details that the reader of the commit can infer from the diff easily, for example, file name. If summary provides enough information, omit the body part.
 - **Formatting**: Do not include any markdown, bullet points, or references to 'git commit'.
-- **Language**: Use clear, professional language without jargon.
 
 **Examples of Good Commit Messages:**
 
